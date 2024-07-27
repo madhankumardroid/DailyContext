@@ -52,6 +52,18 @@ kotlin {
     }
     
     jvm("desktop")
+
+    js(IR) {
+        moduleName = "DailyContext"
+        browser() {
+            //Tool bundler for converting kotlin code to JS
+            commonWebpackConfig() {
+                outputFileName = "dailyContext.js"
+                devServer = (devServer ?: KotlinWebpackConfig.DevServer()).copy()
+            }
+        }
+        binaries.executable()//it will generate executable JS files
+    }
     
     listOf(
         iosX64(),
@@ -59,7 +71,7 @@ kotlin {
         iosSimulatorArm64()
     ).forEach { iosTarget ->
         iosTarget.binaries.framework {
-            baseName = "ComposeApp"
+            baseName = "DailyContext"
             isStatic = true
         }
     }
