@@ -3,12 +3,25 @@ import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.targets.js.dsl.ExperimentalWasmDsl
 import org.jetbrains.kotlin.gradle.targets.js.webpack.KotlinWebpackConfig
+import java.util.Properties
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.jetbrainsCompose)
     alias(libs.plugins.compose.compiler)
+    id("com.github.gmazzo.buildconfig") version "5.4.0"
+}
+
+buildConfig {
+    val localProperties = Properties()
+    val localPropertiesFile = rootProject.file("apiKey.properties")
+    if (localPropertiesFile.exists()) {
+        localProperties.load(localPropertiesFile.inputStream())
+    }
+    val apiKey = localProperties.getProperty("apiKey") ?: ""
+    buildConfigField("API_KEY", apiKey)
+    buildConfigField("BASE_URL", "https://newsapi.org/v2/")
 }
 
 kotlin {
