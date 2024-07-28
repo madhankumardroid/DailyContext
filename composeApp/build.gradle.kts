@@ -10,6 +10,7 @@ plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.jetbrainsCompose)
     alias(libs.plugins.compose.compiler)
+    alias(libs.plugins.kotlinSerialization)
     id("com.github.gmazzo.buildconfig") version "5.4.0"
 }
 
@@ -97,6 +98,7 @@ kotlin {
             implementation(libs.ktor.client.content.negotiation)
             implementation(libs.ktor.logging)
             implementation(libs.koin.compose)
+            implementation(libs.kotlin.serialization)
         }
         desktopMain.dependencies {
             implementation(compose.desktop.currentOs)
