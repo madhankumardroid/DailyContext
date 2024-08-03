@@ -1,6 +1,10 @@
 package di
 
 import DailyContext.composeApp.BuildConfig
+import articles.data.data_source.ArticlesRemoteDataSourceImpl
+import articles.data.repository.ArticlesRepositoryImpl
+import articles.data.repository.IArticlesRemoteDataSource
+import articles.domain.IArticlesRepository
 import io.ktor.client.HttpClient
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.plugins.logging.DEFAULT
@@ -22,12 +26,17 @@ fun startDI(appDeclaration: KoinAppDeclaration = {}) {
     startKoin {
         appDeclaration()
         modules(
+            repositoryModule,
             ktorModule,
             platformModule()
         )
     }
 }
 
+val repositoryModule = module {
+    single<IArticlesRepository> { ArticlesRepositoryImpl(get()) }
+    single<IArticlesRemoteDataSource> { ArticlesRemoteDataSourceImpl(get()) }
+}
 val ktorModule = module {
     single {
         HttpClient {
@@ -45,10 +54,8 @@ val ktorModule = module {
                 level = LogLevel.ALL
             }
             headers {
-                append("X-Api-Key", BuildConfig.API_KEY) // TODO: Move header name to constant
+                append(DIConstants.X_API_KEY_HEADER_NAME, BuildConfig.API_KEY)
             }
         }
     }
-
-    single { "https://apex.oracle.com/pls/apex/internship_space" }
 }
