@@ -4,7 +4,7 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class Article(
+data class ArticleDTO(
     @SerialName("author")
     val author: String,
     @SerialName("content")
@@ -14,7 +14,7 @@ data class Article(
     @SerialName("publishedAt")
     val publishedAt: String,
     @SerialName("source")
-    val source: Source,
+    val source: SourceDTO,
     @SerialName("title")
     val title: String,
     @SerialName("url")
