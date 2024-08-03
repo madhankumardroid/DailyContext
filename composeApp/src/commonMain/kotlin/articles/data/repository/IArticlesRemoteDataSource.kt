@@ -1,6 +1,7 @@
 package articles.data.repository
 
 import articles.data.dto.ArticleDTO
+import articles.data.dto.ArticlesDTO
 
 interface IArticlesRemoteDataSource {
     val defaultPageValue: Int
@@ -10,22 +11,22 @@ interface IArticlesRemoteDataSource {
         country: String,
         category: String,
         page: Int = defaultPageValue
-    ): List<ArticleDTO>
+    ): ArticlesDTO
 
     suspend fun getArticlesByDate(
         fromDate: String,
         toDate: String,
         page: Int = defaultPageValue
-    ): List<ArticleDTO>
+    ): ArticlesDTO
 
     suspend fun getArticle(): ArticleDTO
     suspend fun getArticlesByKeyword(
         keyword: String,
         page: Int = defaultPageValue
-    ): List<ArticleDTO>
+    ): ArticlesDTO
 
     suspend fun getArticlesByLanguage(
         language: String,
         page: Int = defaultPageValue
-    ): List<ArticleDTO>
+    ): ArticlesDTO
 }

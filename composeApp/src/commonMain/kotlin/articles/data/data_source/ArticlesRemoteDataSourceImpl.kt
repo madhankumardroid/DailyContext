@@ -8,43 +8,44 @@ import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.get
 
-class ArticlesRemoteDataImpl(private val httpClient: HttpClient) : IArticlesRemoteDataSource {
+class ArticlesRemoteDataSourceImpl(private val httpClient: HttpClient) : IArticlesRemoteDataSource {
     override suspend fun getArticles(
         country: String,
         category: String,
         page: Int
-    ): List<ArticleDTO> {
+    ): ArticlesDTO {
         val response: ArticlesDTO =
-            httpClient.get("${BuildConfig.BASE_URL}/top-headlines?country=$country&category=$category&page=$page")
+            httpClient.get("${BuildConfig.BASE_URL}/everything?country=$country&category=$category&page=$page")
                 .body()
-        return response.articles
+        return response
     }
 
     override suspend fun getArticlesByDate(
         fromDate: String,
         toDate: String,
         page: Int
-    ): List<ArticleDTO> {
+    ): ArticlesDTO {
         val response: ArticlesDTO =
             httpClient.get("${BuildConfig.BASE_URL}/everything?from=$fromDate&to=$toDate&page=$page")
                 .body()
-        return response.articles
+        return response
     }
 
     override suspend fun getArticle(): ArticleDTO {
         TODO("Not yet implemented")
     }
 
-    override suspend fun getArticlesByKeyword(keyword: String, page: Int): List<ArticleDTO> {
+    override suspend fun getArticlesByKeyword(keyword: String, page: Int): ArticlesDTO {
         val response: ArticlesDTO =
             httpClient.get("${BuildConfig.BASE_URL}/everything?q=$keyword&page=$page")
                 .body()
-        return response.articles
+        return response
     }
 
-    override suspend fun getArticlesByLanguage(language: String, page: Int): List<ArticleDTO> {
+    override suspend fun getArticlesByLanguage(language: String, page: Int): ArticlesDTO {
         val response: ArticlesDTO =
             httpClient.get("${BuildConfig.BASE_URL}/everything?language=$language&page=$page")
                 .body()
-        return response.articles    }
+        return response
+    }
 }
