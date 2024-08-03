@@ -99,6 +99,7 @@ kotlin {
             implementation(libs.ktor.logging)
             implementation(libs.koin.compose)
             implementation(libs.kotlin.serialization)
+            implementation(libs.kotlinx.datetime)
         }
         desktopMain.dependencies {
             implementation(compose.desktop.currentOs)
