@@ -10,12 +10,15 @@ import articles.domain.interactors.GetArticlesByKeywordUseCase
 import articles.domain.interactors.GetArticlesByLanguageUseCase
 import articles.domain.interactors.GetArticlesUseCase
 import articles.domain.model.map.Mapper
+import articles.presentation.view.features.articles.ArticlesViewModel
 import io.ktor.client.HttpClient
+import io.ktor.client.plugins.DefaultRequest
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
-import io.ktor.client.plugins.logging.DEFAULT
 import io.ktor.client.plugins.logging.LogLevel
 import io.ktor.client.plugins.logging.Logger
 import io.ktor.client.plugins.logging.Logging
+import io.ktor.client.plugins.logging.SIMPLE
+import io.ktor.client.request.header
 import io.ktor.http.headers
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.coroutines.Dispatchers
@@ -33,13 +36,19 @@ fun startDI(appDeclaration: KoinAppDeclaration = {}) {
     startKoin {
         appDeclaration()
         modules(
+            viewModelModule,
             repositoryModule,
             ktorModule,
-            platformModule()
+            platformModule(),
+            useCasesModule,
+            mapperModule,
+            dispatcherModule
         )
     }
 }
-
+val viewModelModule = module {
+    factory { ArticlesViewModel(get()) }
+}
 val mapperModule = module {
     single { Mapper() }
 }
@@ -70,11 +79,11 @@ val ktorModule = module {
                 )
             }
             install(Logging) {
-                logger = Logger.DEFAULT
+                logger = Logger.SIMPLE
                 level = LogLevel.ALL
             }
-            headers {
-                append(DIConstants.X_API_KEY_HEADER_NAME, BuildConfig.API_KEY)
+            install(DefaultRequest) {
+                header(DIConstants.X_API_KEY_HEADER_NAME, BuildConfig.API_KEY)
             }
         }
     }
