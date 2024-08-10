@@ -14,9 +14,10 @@ class GetArticlesByDateUseCase (
     private val mapper: Mapper,
     private val dispatcher: CoroutineDispatcher
 ) {
-    suspend fun invoke(fromDate : String = getTodayDate(), toDate : String): Result<List<ArticleEntity>> = withContext(dispatcher) {
+    suspend operator fun invoke(fromDate : String = getTodayDate(), toDate : String  = getTodayDate()): Result<List<ArticleEntity>> = withContext(dispatcher) {
         try {
-            Result.success(mapper.map(articlesRepository.getArticlesByDate(fromDate, toDate)))
+            val articlesByDate = articlesRepository.getArticlesByDate(fromDate, toDate)
+            Result.success(mapper.map(articlesByDate.articles))
         } catch (ex : Exception) {
             Result.failure(ex)
         }
