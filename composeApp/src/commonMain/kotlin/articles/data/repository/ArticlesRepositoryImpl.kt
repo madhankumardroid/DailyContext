@@ -1,24 +1,24 @@
 package articles.data.repository
 
 import articles.data.dto.ArticleDTO
+import articles.data.dto.ArticlesDTO
 import articles.domain.IArticlesRepository
 
 class ArticlesRepositoryImpl(private val articlesRemoteDataSource: IArticlesRemoteDataSource) :
     IArticlesRepository {
     override suspend fun getArticles(
-        country: String,
-        category: String,
+        language: String,
         page: Int
-    ): List<ArticleDTO> {
-        return articlesRemoteDataSource.getArticles(country, category, page).articles
+    ): ArticlesDTO {
+        return articlesRemoteDataSource.getArticles(language, page)
     }
 
     override suspend fun getArticlesByDate(
         fromDate: String,
         toDate: String,
         page: Int
-    ): List<ArticleDTO> {
-        return articlesRemoteDataSource.getArticlesByDate(fromDate, toDate, page).articles
+    ): ArticlesDTO {
+        return articlesRemoteDataSource.getArticlesByDate(fromDate, toDate, page)
     }
 
     override suspend fun getArticle(): ArticleDTO {
