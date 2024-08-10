@@ -10,12 +10,11 @@ import io.ktor.client.request.get
 
 class ArticlesRemoteDataSourceImpl(private val httpClient: HttpClient) : IArticlesRemoteDataSource {
     override suspend fun getArticles(
-        country: String,
-        category: String,
+        language: String,
         page: Int
     ): ArticlesDTO {
         val response: ArticlesDTO =
-            httpClient.get("${BuildConfig.BASE_URL}/everything?country=$country&category=$category&page=$page")
+            httpClient.get("${BuildConfig.BASE_URL}everything?language=$language&domains=bbc.co.uk&page=$page")
                 .body()
         return response
     }

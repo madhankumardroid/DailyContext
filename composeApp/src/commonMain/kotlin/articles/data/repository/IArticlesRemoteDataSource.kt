@@ -8,8 +8,7 @@ interface IArticlesRemoteDataSource {
         get() = 1
 
     suspend fun getArticles(
-        country: String,
-        category: String,
+        language: String,
         page: Int = defaultPageValue
     ): ArticlesDTO
 
