@@ -15,11 +15,11 @@ plugins {
 
 buildConfig {
     val localProperties = Properties()
-    val localPropertiesFile = rootProject.file("apiKey.properties")
+    val localPropertiesFile = rootProject.file("apiKeys.properties")
     if (localPropertiesFile.exists()) {
         localProperties.load(localPropertiesFile.inputStream())
     }
-    val apiKey = localProperties.getProperty("apiKey") ?: ""
+    val apiKey = localProperties.getProperty("API_KEY") ?: ""
     buildConfigField("API_KEY", apiKey)
     buildConfigField("BASE_URL", "https://newsapi.org/v2/")
 }
@@ -99,6 +99,9 @@ kotlin {
             implementation(libs.koin.compose)
             implementation(libs.kotlin.serialization)
             implementation(libs.kotlinx.datetime)
+            implementation(libs.voyager.navigator)
+            implementation(libs.voyager.koin)
+            api(libs.image.loader)
         }
         desktopMain.dependencies {
             implementation(compose.desktop.currentOs)
