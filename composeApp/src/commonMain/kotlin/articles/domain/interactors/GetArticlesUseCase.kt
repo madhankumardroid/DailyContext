@@ -11,11 +11,13 @@ class GetArticlesUseCase(
     private val mapper: Mapper,
     private val dispatcher: CoroutineDispatcher
 ) {
-    suspend fun invoke(country : String, category : String): Result<List<ArticleEntity>> = withContext(dispatcher) {
-        try {
-            Result.success(mapper.map(articlesRepository.getArticles(country, category)))
-        } catch (ex : Exception) {
-            Result.failure(ex)
+    suspend operator fun invoke(language: String = "en"): Result<List<ArticleEntity>> =
+        withContext(dispatcher) {
+            try {
+                val articles = articlesRepository.getArticles(language).articles
+                Result.success(mapper.map(articles))
+            } catch (ex: Exception) {
+                Result.failure(ex)
+            }
         }
-    }
 }
