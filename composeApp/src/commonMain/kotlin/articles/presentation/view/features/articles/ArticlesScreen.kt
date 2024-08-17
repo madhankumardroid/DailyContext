@@ -1,5 +1,6 @@
 package articles.presentation.view.features.articles
 
+import LocalWindowSize
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -11,6 +12,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.Card
 import androidx.compose.material.MaterialTheme
@@ -30,6 +34,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import articles.domain.model.map.ArticleEntity
 import articles.presentation.view.common.state.ManageUiState
+import articles.presentation.view.common.util.WindowSize
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.koin.getScreenModel
 import com.seiko.imageloader.rememberImagePainter
@@ -59,9 +64,21 @@ class ArticlesScreen : Screen {
     fun ArticlesList(
         articles: List<ArticleEntity>
     ) {
-        LazyColumn(modifier = Modifier.fillMaxSize(), verticalArrangement = Arrangement.Top) {
-            items(articles) { article ->
-                ArticleItem(article)
+        if (LocalWindowSize.current == WindowSize.COMPACT) {
+            LazyColumn(modifier = Modifier.fillMaxSize(), verticalArrangement = Arrangement.Top) {
+                items(articles) { article ->
+                    ArticleItem(article)
+                }
+            }
+        } else {
+            LazyVerticalGrid(
+                GridCells.Adaptive(320.dp),
+                modifier = Modifier.fillMaxSize(),
+                verticalArrangement = Arrangement.Top
+            ) {
+                items(articles) { article ->
+                    ArticleItem(article)
+                }
             }
         }
     }
@@ -87,6 +104,7 @@ class ArticlesScreen : Screen {
                 Text(
                     text = article.title ?: "",
                     modifier = Modifier.padding(vertical = 4.dp),
+                    maxLines = 1,
                     style = TextStyle(
                         color = MaterialTheme.colors.primary,
                         fontStyle = FontStyle.Normal,
@@ -114,7 +132,8 @@ class ArticlesScreen : Screen {
                 Text(
                     text = article.description ?: "",
                     modifier = Modifier.fillMaxWidth().wrapContentHeight().padding(vertical = 4.dp),
-                    style = MaterialTheme.typography.body1
+                    style = MaterialTheme.typography.body1,
+                    maxLines = 2
                 )
             }
         }

@@ -1,13 +1,19 @@
 package com.madhan.dailycontext
 
 import App
+import android.app.Activity
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.remember
+import androidx.compose.ui.graphics.toComposeRect
+import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.window.layout.WindowMetricsCalculator
+import articles.presentation.view.common.util.WindowSize
 import com.seiko.imageloader.ImageLoader
 import com.seiko.imageloader.LocalImageLoader
 import com.seiko.imageloader.cache.memory.maxSizePercent
@@ -24,7 +30,7 @@ class MainActivity : ComponentActivity() {
             CompositionLocalProvider(
                 LocalImageLoader provides remember { generateImageLoader() },
             ) {
-                App()
+                App(rememberWindowSize())
             }
         }
     }
@@ -52,8 +58,15 @@ class MainActivity : ComponentActivity() {
     }
 }
 
-@Preview
 @Composable
-fun AppAndroidPreview() {
-    App()
+private fun Activity.rememberWindowSize() : WindowSize {
+        val localConfiguration = LocalConfiguration.current
+        val windowMetrics = remember(localConfiguration) {
+            WindowMetricsCalculator.getOrCreate()
+                .computeCurrentWindowMetrics(this)
+        }
+    val windowSizeInDp = with(LocalDensity.current) {
+        windowMetrics.bounds.toComposeRect().size.toDpSize()
+    }
+    return WindowSize.getWindowSize(windowSizeInDp.width)
 }

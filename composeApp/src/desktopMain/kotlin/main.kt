@@ -1,17 +1,26 @@
+import androidx.compose.ui.unit.DpSize
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
+import androidx.compose.ui.window.rememberWindowState
+import articles.presentation.view.common.util.WindowSize
 import com.seiko.imageloader.ImageLoader
 import com.seiko.imageloader.component.setupDefaultComponents
 import com.seiko.imageloader.defaultImageResultMemoryCache
+import di.startDI
 import okio.Path.Companion.toOkioPath
 import java.io.File
 
 fun main() = application {
+    startDI { }
+    val windowState = rememberWindowState(size = DpSize(850.dp, 650.dp))
+
     Window(
         onCloseRequest = ::exitApplication,
         title = "DailyContext",
+        state = windowState
     ) {
-        App()
+        App(windowSize = WindowSize.getWindowSize(windowState.size.width))
     }
 }
 
@@ -58,7 +67,11 @@ private val currentOperatingSystem: OperatingSystem
 private fun getCacheDir() = when (currentOperatingSystem) {
     OperatingSystem.Windows -> File(System.getenv("AppData"), "$ApplicationName/cache")
     OperatingSystem.Linux -> File(System.getProperty("user.home"), ".cache/$ApplicationName")
-    OperatingSystem.MacOS -> File(System.getProperty("user.home"), "Library/Caches/$ApplicationName")
+    OperatingSystem.MacOS -> File(
+        System.getProperty("user.home"),
+        "Library/Caches/$ApplicationName"
+    )
+
     else -> throw IllegalStateException("Unsupported operating system")
 }
 
