@@ -37,12 +37,13 @@ import articles.presentation.view.common.state.ManageUiState
 import articles.presentation.view.common.util.WindowSize
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.koin.getScreenModel
+import cafe.adriel.voyager.koin.koinScreenModel
 import com.seiko.imageloader.rememberImagePainter
 
 class ArticlesScreen : Screen {
     @Composable
     override fun Content() {
-        val viewModel = getScreenModel<ArticlesViewModel>()
+        val viewModel = koinScreenModel<ArticlesViewModel>()
         val state by viewModel.uiState.collectAsState()
         Scaffold(
             topBar = {

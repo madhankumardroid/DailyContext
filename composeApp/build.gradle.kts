@@ -64,6 +64,7 @@ kotlin {
         }
         binaries.executable()//it will generate executable JS files
     }
+
     
     listOf(
         iosX64(),
@@ -85,6 +86,7 @@ kotlin {
             implementation(libs.ktor.client.android)
             implementation(libs.ktor.client.okhttp)
             implementation(libs.koin.android)
+            implementation(libs.koin.androidx.compose)
         }
         commonMain.dependencies {
             implementation(compose.runtime)
@@ -97,6 +99,7 @@ kotlin {
             implementation(libs.ktor.client.content.negotiation)
             implementation(libs.ktor.logging)
             implementation(libs.koin.compose)
+            implementation(libs.koin.core)
             implementation(libs.kotlin.serialization)
             implementation(libs.kotlinx.datetime)
             implementation(libs.voyager.navigator)
@@ -109,6 +112,13 @@ kotlin {
         }
         iosMain.dependencies {
             implementation(libs.ktor.client.darwin)
+        }
+
+        val jsMain by getting {
+            dependencies {
+                implementation(compose.html.core)
+                implementation(libs.ktor.client.js)
+            }
         }
     }
 }
@@ -163,4 +173,8 @@ compose.desktop {
             packageVersion = "1.0.0"
         }
     }
+}
+
+compose.experimental {
+    web.application {}
 }
