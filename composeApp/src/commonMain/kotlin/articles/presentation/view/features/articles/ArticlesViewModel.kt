@@ -38,6 +38,11 @@ class ArticlesViewModel(private val getArticlesUseCase: GetArticlesUseCase) :
         return ArticlesContract.State(ResourceUiState.Idle)
     }
 
-    override fun handleEvent(uiEvent: UIEvent) {
+    override fun handleEvent(uiEvent: ArticlesContract.Event) {
+        when(uiEvent) {
+            is ArticlesContract.Event.OnArticleClick -> {
+                setEffect { ArticlesContract.Effect.NavigateToArticleDetail(uiEvent.articleId) }
+            }
+        }
     }
 }

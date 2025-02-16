@@ -2,6 +2,7 @@ package articles.presentation.view.features.articles
 
 import LocalWindowSize
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -22,6 +23,7 @@ import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -36,15 +38,28 @@ import articles.domain.model.map.ArticleEntity
 import articles.presentation.view.common.state.ManageUiState
 import articles.presentation.view.common.util.WindowSize
 import cafe.adriel.voyager.core.screen.Screen
-import cafe.adriel.voyager.koin.getScreenModel
 import cafe.adriel.voyager.koin.koinScreenModel
+import cafe.adriel.voyager.navigator.LocalNavigator
+import cafe.adriel.voyager.navigator.currentOrThrow
 import com.seiko.imageloader.rememberImagePainter
+import kotlinx.coroutines.flow.collectLatest
 
 class ArticlesScreen : Screen {
     @Composable
     override fun Content() {
+        val navigator= LocalNavigator.currentOrThrow
         val viewModel = koinScreenModel<ArticlesViewModel>()
         val state by viewModel.uiState.collectAsState()
+        LaunchedEffect(Unit) {
+            viewModel.uiEffect.collectLatest { effect ->
+                when(effect) {
+                    is ArticlesContract.Effect.NavigateToArticleDetail -> {
+                        // TODO: Navigate to article detail screen.
+//                        navigator.push()
+                    }
+                }
+            }
+        }
         Scaffold(
             topBar = {
                 TopAppBar(title = { Text(text = "Daily Context") })
@@ -54,7 +69,10 @@ class ArticlesScreen : Screen {
                 modifier = Modifier.padding(padding).fillMaxSize(),
                 resourceUiState = state.articles,
                 successView = { articles ->
-                    ArticlesList(articles)
+                    ArticlesList(articles,
+                        onArticleClick = { articleId ->
+                            viewModel.setEvent(ArticlesContract.Event.OnArticleClick(articleId))
+                        })
                 },
                 emptyMessage = "No Articles Found"
             )
@@ -63,12 +81,18 @@ class ArticlesScreen : Screen {
 
     @Composable
     fun ArticlesList(
-        articles: List<ArticleEntity>
+        articles: List<ArticleEntity>,
+        onArticleClick: (String) -> Unit,
     ) {
         if (LocalWindowSize.current == WindowSize.COMPACT) {
             LazyColumn(modifier = Modifier.fillMaxSize(), verticalArrangement = Arrangement.Top) {
                 items(articles) { article ->
-                    ArticleItem(article)
+                    ArticleItem(article, onClick = {
+                        article.id?.let {
+                            onArticleClick(it)
+                        }
+                    }
+                    )
                 }
             }
         } else {
@@ -78,19 +102,23 @@ class ArticlesScreen : Screen {
                 verticalArrangement = Arrangement.Top
             ) {
                 items(articles) { article ->
-                    ArticleItem(article)
+                    ArticleItem(article, onClick = {
+                        article.id?.let {
+                            onArticleClick(it)
+                        }
+                    })
                 }
             }
         }
     }
 
     @Composable
-    fun ArticleItem(article: ArticleEntity) {
+    fun ArticleItem(article: ArticleEntity, onClick: () -> Unit) {
         Card(
-            modifier = Modifier.padding(8.dp).fillMaxWidth().wrapContentHeight(),
+            modifier = Modifier.padding(8.dp).fillMaxWidth().wrapContentHeight().clickable(onClick = onClick),
             shape = MaterialTheme.shapes.medium,
             elevation = 5.dp,
-            backgroundColor = MaterialTheme.colors.surface
+            backgroundColor = MaterialTheme.colors.surface,
         ) {
             Column(modifier = Modifier.fillMaxWidth().wrapContentHeight().padding(8.dp)) {
                 val imagePainter = article.urlToImage?.let { rememberImagePainter(it) }

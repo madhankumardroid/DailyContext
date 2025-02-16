@@ -7,9 +7,13 @@ import articles.presentation.intent.UIState
 import articles.presentation.model.ResourceUiState
 
 interface ArticlesContract {
-    sealed interface Event : UIEvent
+    sealed interface Event : UIEvent {
+        data class OnArticleClick(val articleId: String) : Event
+    }
 
     data class State(val articles: ResourceUiState<List<ArticleEntity>>) : UIState
 
-    sealed interface Effect : UIEffect
+    sealed interface Effect : UIEffect {
+        data class NavigateToArticleDetail(val articleId: String) : Effect
+    }
 }

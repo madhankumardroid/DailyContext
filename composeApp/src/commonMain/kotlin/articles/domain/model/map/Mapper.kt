@@ -14,6 +14,7 @@ class Mapper {
     fun map(values: List<ArticleDTO>): List<ArticleEntity> =
         values.map {
             ArticleEntity(
+                it.source.id,
                 it.author,
                 it.content,
                 it.description,

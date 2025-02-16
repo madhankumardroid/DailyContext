@@ -44,7 +44,7 @@ abstract class BaseViewModel<Event : UIEvent, State : UIState, Effect : UIEffect
     /**
      * To handle each event
      */
-    abstract fun handleEvent(uiEvent: UIEvent)
+    abstract fun handleEvent(uiEvent: Event)
 
     /**
      * Sets the new UI event
@@ -61,7 +61,7 @@ abstract class BaseViewModel<Event : UIEvent, State : UIState, Effect : UIEffect
      * Sets the new UI state
      * @param reduce The extension function type of State. This can be called on the currentState instance
      */
-    protected fun setState(reduce: State.() -> State) {
+    protected fun setState(reduce: State.() -> State) { //reduce: State.() -> State ==> This is called Lambda With Receiver
         val newState = currentState.reduce()
         _uiState.value = newState
     }
